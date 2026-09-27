@@ -108,7 +108,7 @@ namespace opendoc::app {
 
         // Formats "[time TAG] message" into a fixed buffer, strips trailing newlines so
         // the record stays on one line, then flushes so stdout and stderr interleave cleanly.
-        void emit_tagged(FILE *stream, const char *tag, const char *fmt, const va_list ap) {
+        void emit_tagged(FILE *stream, const char *tag, const char *fmt, va_list ap) {
             char time_str[16];
             get_timestamp(time_str, sizeof(time_str));
 
