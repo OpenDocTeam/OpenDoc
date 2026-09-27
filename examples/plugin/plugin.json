@@ -1,0 +1,8 @@
+{
+  "name": "hello",
+  "description": "Example OpenDoc plugin",
+  "version": "1.0.0",
+  "author": "OpenDoc",
+  "github": "https://github.com/OpenDocTeam/OpenDoc",
+  "theme": "hello"
+}

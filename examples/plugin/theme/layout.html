@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ title }} — {{ site_name }}</title>
+  <link rel="stylesheet" href="{{ base }}assets/hello.css">
+</head>
+<body class="hello-theme">
+  <header class="hello-header">
+    <strong>{{ site_name }}</strong>
+    <span class="hello-tag">hello theme</span>
+  </header>
+  <div class="hello-layout">
+    <nav class="hello-nav">{{{ nav }}}</nav>
+    <main class="hello-main">
+      <h1>{{ title }}</h1>
+      {{{ content }}}
+      <p class="hello-footer-note">{{ hello_plugin }}</p>
+    </main>
+  </div>
+  <footer class="hello-footer">
+    <span>{{{ generator }}}</span>
+  </footer>
+</body>
+</html>

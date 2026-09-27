@@ -1,0 +1,46 @@
+# Build directories
+build/
+build-ship-*/
+cmake-build-*/
+out/
+
+# Shipping artifacts
+ship/
+tools/sysroot-aarch64/
+
+# CMake / Ninja artifacts
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+compile_commands.json
+.ninja_deps
+.ninja_log
+build.ninja
+*.cmake.tmp
+
+# IDE / editor
+.idea/
+.vscode/
+*.swp
+*~
+
+# Example site
+examples/site/site
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Package / binary artifacts
+*.o
+*.obj
+*.a
+*.lib
+*.so
+*.dll
+*.exe
+*.pdb
+
+# Local env
+.env
+.env.local

@@ -1,0 +1,30 @@
+site_name: Example
+site_description: A minimal OpenDoc sample site
+
+docs_dir: docs
+site_dir: site
+
+logo: assets/logo.svg
+favicon: assets/favicon.ico
+
+theme:
+  name: default
+  options:
+    palette_primary: "#0070f3"
+    show_toc: true
+    show_prev_next: true
+
+footer: Copyright (c) YEAR YOUR_NAME
+
+nav:
+  - Home: index.md
+  - Guide:
+      - Getting Started: guide/getting-started.md
+      - Configuration: guide/configuration.md
+  - Examples:
+      - Markdown Example: guide/markdown-example.md
+
+plugins:
+  - search
+  - sitemap
+  - rss

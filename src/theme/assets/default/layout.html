@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1" name="viewport"/>
+    {{# description }}
+    <meta content="{{ description }}" name="description"/>
+    {{/ description }}
+    {{# description }}
+    <meta content="{{ description }}" property="og:description"/>
+    {{/ description }}
+    <meta content="{{ title }}" property="og:title"/>
+    <meta content="{{ site_name }}" property="og:site_name"/>
+    {{# site_url }}
+    <meta content="{{ site_url }}{{ url }}" property="og:url"/>
+    {{/ site_url }}
+    {{# social_card }}
+    <meta content="{{ social_card }}" property="og:image"/>
+    <meta content="summary_large_image" name="twitter:card"/>
+    <meta content="{{ social_card }}" name="twitter:image"/>
+    {{/ social_card }}
+    {{# favicon }}
+    <link href="{{ favicon }}" rel="icon"/>
+    {{/ favicon }}
+    <title>{{ title }} · {{ site_name }}</title>
+    <link href="{{ base }}assets/css/base.css" rel="stylesheet"/>
+    {{# palette_primary }}
+    <style>
+        :root {
+            --accent: {{{ palette_primary }}};
+            --accent-hover: color-mix(in srgb, var(--accent) 82%, #000);
+            --accent-soft: color-mix(in srgb, var(--accent) 12%, var(--bg));
+            --accent-border: color-mix(in srgb, var(--accent) 40%, transparent);
+        }
+    </style>
+    {{/ palette_primary }}
+    <script>
+        (function () {
+            try {
+                var t = localStorage.getItem("opendoc-theme");
+                if (t === "dark" || t === "light") {
+                    document.documentElement.setAttribute("data-theme", t);
+                }
+            } catch (e) { /* ignore */
+            }
+        })();
+    </script>
+</head>
+<body>
+<div class="layout">
+    <header class="site-header" id="site-header">
+        <div class="header-inner">
+            <button aria-expanded="false" aria-label="Toggle navigation" class="nav-toggle" id="nav-toggle">
+                <svg fill="none" height="18" stroke="currentColor" stroke-linecap="round"
+                     stroke-linejoin="round" stroke-width="1.75" viewBox="0 0 24 24" width="18">
+                    <line x1="3" x2="21" y1="6" y2="6"/>
+                    <line x1="3" x2="21" y1="12" y2="12"/>
+                    <line x1="3" x2="21" y1="18" y2="18"/>
+                </svg>
+            </button>
+
+            <a class="navbar-brand" href="{{ base }}">
+                {{# logo }}
+                <img alt="{{ site_name }} logo" class="navbar-logo" src="{{ logo }}"/>
+                {{/ logo }}
+                {{^ logo }}
+                <svg aria-hidden="true" class="navbar-icon" fill="none" height="20"
+                     stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                     stroke-width="1.75" viewBox="0 0 24 24" width="20">
+                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+                </svg>
+                {{/ logo }}
+                <span class="site-name">{{ site_name }}</span>
+            </a>
+
+            {{# top_nav }}
+            <nav aria-label="Primary" class="header-nav">
+                {{{ top_nav }}}
+            </nav>
+            {{/ top_nav }}
+
+            {{# versions }}
+            <div class="version-switch">
+                {{{ versions }}}
+            </div>
+            {{/ versions }}
+
+            <div class="header-actions">
+                <div class="header-search" id="header-search">
+                    <svg aria-hidden="true" class="search-icon" fill="none" height="15"
+                         stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                         stroke-width="1.75" viewBox="0 0 24 24" width="15">
+                        <circle cx="11" cy="11" r="8"/>
+                        <path d="m21 21-4.3-4.3"/>
+                    </svg>
+                    <input autocomplete="off" id="search-input" placeholder="Search documentation…"
+                           title="Press / to search" type="search"/>
+                    <kbd class="search-kbd" id="search-kbd">/</kbd>
+                    <div class="search-results" hidden id="search-results"></div>
+                </div>
+
+                {{# github_url }}
+                <a aria-label="GitHub repository" class="header-icon-link" href="{{ github_url }}"
+                   rel="noopener" target="_blank">
+                    <svg aria-hidden="true" fill="currentColor" height="16" viewBox="0 0 16 16"
+                         width="16">
+                        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38
+                         0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01
+                         1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95
+                         0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09
+                         2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87
+                         3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0
+                         16 8c0-4.42-3.58-8-8-8z"/>
+                    </svg>
+                </a>
+                {{/ github_url }}
+
+                <button aria-label="Toggle color theme" class="theme-toggle" id="theme-toggle"
+                        title="Toggle light/dark" type="button">
+                    <svg class="icon-moon" fill="none" height="16" stroke="currentColor"
+                         stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
+                         viewBox="0 0 24 24" width="16">
+                        <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+                    </svg>
+                    <svg class="icon-sun" fill="none" height="16" stroke="currentColor"
+                         stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
+                         viewBox="0 0 24 24" width="16">
+                        <circle cx="12" cy="12" r="4"/>
+                        <path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16
+                         0h2M4.93 19.07l1.41-1.41m11.32-11.32 1.41-1.41"/>
+                    </svg>
+                </button>
+
+                <button aria-label="Search" class="search-toggle" id="search-toggle" type="button">
+                    <svg fill="none" height="16" stroke="currentColor" stroke-linecap="round"
+                         stroke-linejoin="round" stroke-width="1.75" viewBox="0 0 24 24" width="16">
+                        <circle cx="11" cy="11" r="8"/>
+                        <path d="m21 21-4.3-4.3"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="content-wrap">
+        <nav aria-label="Site navigation" class="sidebar" id="sidebar">
+            <div class="sidebar-inner">
+                {{{ nav }}}
+            </div>
+        </nav>
+
+        <main class="main">
+            {{# breadcrumbs }}
+            <nav aria-label="Breadcrumb" class="breadcrumbs">
+                {{ breadcrumbs }}
+            </nav>
+            {{/ breadcrumbs }}
+            <article class="page-content">
+                {{{ content }}}
+            </article>
+
+            {{# edit_url }}
+            <div class="edit-this-page">
+                <a href="{{ edit_url }}" rel="noopener">
+                    <svg fill="none" height="13" stroke="currentColor" stroke-linecap="round"
+                         stroke-linejoin="round" stroke-width="1.75" viewBox="0 0 24 24" width="13">
+                        <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+                    </svg>
+                    Edit this page
+                </a>
+            </div>
+            {{/ edit_url }}
+
+            {{# prev_url }}
+            <nav aria-label="Pagination" class="page-pager">
+                <a class="pager-link pager-prev" href="{{ prev_url }}">
+                    <span class="pager-label">Previous</span>
+                    <span class="pager-title">{{ prev_title }}</span>
+                </a>
+                {{# next_url }}
+                <a class="pager-link pager-next" href="{{ next_url }}">
+                    <span class="pager-label">Next</span>
+                    <span class="pager-title">{{ next_title }}</span>
+                </a>
+                {{/ next_url }}
+            </nav>
+            {{/ prev_url }}
+            {{^ prev_url }}
+            {{# next_url }}
+            <nav aria-label="Pagination" class="page-pager">
+                <a class="pager-link pager-next" href="{{ next_url }}">
+                    <span class="pager-label">Next</span>
+                    <span class="pager-title">{{ next_title }}</span>
+                </a>
+            </nav>
+            {{/ next_url }}
+            {{/ prev_url }}
+        </main>
+
+        <aside aria-label="Table of contents" class="page-toc" id="page-toc">
+            {{# toc }}
+            <button aria-expanded="false" class="toc-toggle" id="toc-toggle" type="button">
+                <span class="toc-title">On This Page</span>
+                <svg aria-hidden="true" fill="none" height="14" stroke="currentColor"
+                     stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
+                     viewBox="0 0 24 24" width="14">
+                    <path d="m6 9 6 6 6-6"/>
+                </svg>
+            </button>
+            <div class="toc-body" id="toc-body">
+                <div class="toc-title toc-title-desktop">On This Page</div>
+                {{{ toc }}}
+            </div>
+            {{/ toc }}
+        </aside>
+    </div>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            {{# footer_columns }}
+            <div class="footer-columns">
+                {{{ footer_columns }}}
+            </div>
+            {{/ footer_columns }}
+            <div class="footer-bottom">
+                <span class="footer-made">Made with OpenDoc</span>
+                {{# footer_text }}
+                <span class="footer-text">{{{ footer_text }}}</span>
+                {{/ footer_text }}
+            </div>
+        </div>
+    </footer>
+</div>
+
+<div class="sidebar-backdrop" hidden id="sidebar-backdrop"></div>
+
+<script>
+    window.__OPEN_DOC_BASE__ = {{{ base_js }}};
+</script>
+<script src="{{ base }}assets/js/theme.js"></script>
+<script defer src="{{ base }}assets/js/search.js"></script>
+{{# has_math }}
+<link href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" rel="stylesheet"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer onload="renderMathInElement(document.body,{delimiters:[{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}],ignoredTags:['script','noscript','style','textarea','pre','code','option'],throwOnError:false})"
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+{{/ has_math }}
+</body>
+</html>
