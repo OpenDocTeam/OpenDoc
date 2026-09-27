@@ -1,11 +1,14 @@
 #include "http_server.hpp"
 
 #include <algorithm>
+#include <atomic>
 #include <cctype>
+#include <csignal>
 #include <fstream>
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <system_error>
 #include <thread>
 #include <vector>
 
@@ -550,8 +553,16 @@ namespace opendoc::serve {
         });
     }
 
-    // Requests shutdown, closes the listening socket to unblock accept, and joins.
-    // Idempotent and noexcept; calling it before start() is harmless.
+    // Stores the stop flag the accept loop polls.
+    void HttpServer::request_stop() const noexcept {
+        if (!impl_) {
+            return;
+        }
+
+        impl_->stop_requested.store(true);
+    }
+
+    // Requests shutdown and joins the accept loop.
     void HttpServer::stop() const noexcept {
         if (!impl_) {
             return;
@@ -559,13 +570,20 @@ namespace opendoc::serve {
 
         impl_->stop_requested.store(true);
 
+        // Join before closing: the accept loop polls stop_requested every 200 ms
+        // and exits on its own, so the socket is released only once no thread can
+        // still be selecting on it.
+        if (impl_->accept_thread.joinable()) {
+            try {
+                impl_->accept_thread.join();
+            } catch (const std::system_error &) {
+                impl_->accept_thread.detach();
+            }
+        }
+
         if (impl_->listen_sock != invalid_socket) {
             close_socket(impl_->listen_sock);
             impl_->listen_sock = invalid_socket;
-        }
-
-        if (impl_->accept_thread.joinable()) {
-            impl_->accept_thread.join();
         }
 
         // WSACleanup only after the thread is done, and at most once per process.
@@ -603,25 +621,28 @@ namespace opendoc::serve {
         // Single server instance the signal handlers reach; set by install_stop_signal().
         HttpServer *g_server_for_signal = nullptr;
 
+        void request_server_stop() {
+            if (g_server_for_signal) {
+                g_server_for_signal->request_stop();
+            }
+        }
+
 #ifdef _WIN32
 
-        // Console handler for Ctrl+C/Ctrl+Break; stops the server and swallows the event.
+        // Console handler for Ctrl+C/Ctrl+Break.
         BOOL WINAPI ctrl_handler(const DWORD type) {
             if (type == CTRL_C_EVENT || type == CTRL_BREAK_EVENT) {
-                if (g_server_for_signal) {
-                    g_server_for_signal->stop();
-                }
+                request_server_stop();
                 return TRUE;
             }
             return FALSE;
         }
 #else
 
-        // POSIX signal handler; only calls stop(), which is async-signal safe enough here.
+        // POSIX signal handler. Only a lock-free atomic store happens here; joining
+        // a thread or touching sockets is undefined behaviour inside a handler.
         void posix_handler(int) {
-            if (g_server_for_signal) {
-                g_server_for_signal->stop();
-            }
+            request_server_stop();
         }
 #endif
     }

@@ -37,7 +37,12 @@ namespace opendoc::serve {
         // Binds, listens, and spawns the accept thread; no-op if already running.
         void start() const;
 
-        // Signals the accept loop to exit and joins it; safe to call repeatedly.
+        // Asks the accept loop to exit without blocking; never joins, so it is
+        // safe to call from a signal handler (and from any thread).
+        void request_stop() const noexcept;
+
+        // Signals the accept loop to exit, joins it, and releases the socket;
+        // safe to call repeatedly, including before start().
         void stop() const noexcept;
 
         // Blocks until the accept thread has finished.
@@ -54,6 +59,6 @@ namespace opendoc::serve {
         std::unique_ptr<Impl> impl_;
     };
 
-    // Routes Ctrl+C/SIGINT/SIGTERM to server.stop(); must be called before start().
+    // Routes Ctrl+C/SIGINT/SIGTERM to server.request_stop().
     void install_stop_signal(HttpServer &server);
 }
