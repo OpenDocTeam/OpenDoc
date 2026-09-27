@@ -20,7 +20,8 @@ namespace opendoc::parser::detail {
         explicit InlineParser(const ParseOptions &opts) : opts_(opts) {
         }
 
-        // Parses one text run into inline nodes.
+        // Parses one text run into inline nodes; constructs that contain other
+        // constructs re-enter this up to kMaxInlineDepth levels deep.
         NodeList parse(std::string_view text);
 
         // Points at the block parser's map; it must outlive this parser.
@@ -29,6 +30,13 @@ namespace opendoc::parser::detail {
     private:
         const ParseOptions &opts_;
         const RefMap *refs_ = nullptr;
+
+        // Nesting level of the run currently in parse(). Link labels and emphasis
+        // content are re-parsed recursively, so without a cap an input like
+        // "[[...[x](u)...](u)](u)" recurses once per level until the stack
+        // overflows (0xC00000FD).
+        static constexpr std::size_t kMaxInlineDepth = 64;
+        std::size_t depth_ = 0;
 
         // Core scanner: buffers literal text and dispatches on special characters.
         void parse_into(NodeList &out, std::string_view text);
@@ -53,11 +61,12 @@ namespace opendoc::parser::detail {
         std::size_t try_delims(NodeList &out, std::string &buf, std::string_view text,
                                std::size_t i) const;
 
-        // Builds a fresh sub-parser sharing options and refs, for recursively parsing
-        // the content found inside a delimiter pair.
-        InlineParser make_sub() const {
+        // Builds a fresh sub-parser sharing options, refs, and the current depth,
+        // for recursively parsing the content found inside a delimiter pair.
+        [[nodiscard]] InlineParser make_sub() const {
             InlineParser sub(opts_);
             sub.set_refs(refs_);
+            sub.depth_ = depth_;
             return sub;
         }
     };

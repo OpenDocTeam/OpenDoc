@@ -44,7 +44,15 @@ namespace opendoc::parser::detail {
 
     NodeList InlineParser::parse(const std::string_view text) {
         NodeList out;
+
+        if (depth_ >= kMaxInlineDepth) {
+            append_text(out, text);
+            return out;
+        }
+
+        ++depth_;
         parse_into(out, text);
+        --depth_;
 
         return out;
     }
